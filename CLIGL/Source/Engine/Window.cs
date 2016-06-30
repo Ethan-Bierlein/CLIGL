@@ -41,7 +41,6 @@ namespace CLIGL
         /// to the console window, and resize the console window to the original width
         /// and height.
         /// </summary>
-        /// <param name="sleepTime">How long the thread should sleep, in milliseconds.</param>
         public void Render()
         {
             this.WindowRenderingBuffer.Render();
