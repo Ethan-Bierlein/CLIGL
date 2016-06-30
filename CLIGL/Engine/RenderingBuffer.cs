@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
-using System.Diagnostics;
-using System.Windows.Forms;
-using System.Threading.Tasks;
 
 namespace CLIGL
 {
