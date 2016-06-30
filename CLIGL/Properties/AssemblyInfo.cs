@@ -4,7 +4,11 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyTitle("CLIGL")]
 [assembly: AssemblyDescription("A command-line interface graphics library.")]
+#if DEBUG
+[assembly: AssemblyConfiguration("Debug")]
+#else
 [assembly: AssemblyConfiguration("Release")]
+#endif
 [assembly: AssemblyCompany("Ethan Bierlein")]
 [assembly: AssemblyProduct("CLIGL")]
 [assembly: AssemblyCopyright("Copyright © 2016")]
