@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="Engine\RenderingBuffer.cs" />
     <Compile Include="Engine\Window.cs" />
-    <Compile Include="Tests\TestMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
