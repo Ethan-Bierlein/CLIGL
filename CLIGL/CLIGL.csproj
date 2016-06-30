@@ -48,9 +48,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Source\Engine\RenderingBuffer.cs" />
-    <Compile Include="Source\Engine\Window.cs" />
-    <Compile Include="Source\Tests\TestMethods.cs" />
+    <Compile Include="Engine\RenderingBuffer.cs" />
+    <Compile Include="Engine\Window.cs" />
+    <Compile Include="Tests\TestMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
