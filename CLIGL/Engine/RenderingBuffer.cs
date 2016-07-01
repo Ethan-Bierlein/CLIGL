@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Threading;
+using System.Runtime.CompilerServices;
 
 namespace CLIGL
 {
@@ -12,9 +12,7 @@ namespace CLIGL
         public int BufferWidth { get; set; }
         public int BufferHeight { get; set; }
         public int BufferSize { get; set; }
-        public char[] TextBuffer { get; set; }
-        public ConsoleColor[] ForegroundColorBuffer { get; set; }
-        public ConsoleColor[] BackgroundColorBuffer { get; set; }
+        public RenderingPixel[] PixelBuffer { get; set; }
 
         /// <summary>
         /// Constructor for the RenderingBuffer class.
@@ -27,9 +25,12 @@ namespace CLIGL
             this.BufferHeight = bufferHeight;
             this.BufferSize = this.BufferWidth * this.BufferHeight;
 
-            this.TextBuffer = new char[this.BufferSize];
-            this.ForegroundColorBuffer = new ConsoleColor[this.BufferSize];
-            this.BackgroundColorBuffer = new ConsoleColor[this.BufferSize];
+            this.PixelBuffer = new RenderingPixel[this.BufferSize];
+
+            for(int i = 0; i < this.BufferSize - 1; i++)
+            {
+                this.PixelBuffer[i] = RenderingPixel.EmptyPixel;
+            }
         }
 
         /// <summary>
@@ -38,6 +39,7 @@ namespace CLIGL
         /// </summary>
         /// <param name="index">The index to convert/</param>
         /// <returns>A 2-dimensional index.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int[] Convert1DIndexTo2DIndex(int index)
         {
             int x = index % this.BufferWidth;
@@ -51,65 +53,50 @@ namespace CLIGL
         /// <param name="x">The x coordinate.</param>
         /// <param name="y">The y coordinate.</param>
         /// <returns>A 1-dimensional index.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public int Convert2DIndexTo1DIndex(int x, int y)
         {
             return x + (y * this.BufferWidth);
         }
 
         /// <summary>
-        /// Clear the text buffer with a specified clear character.
+        /// Clear the current active pixel buffer with a clear character, a
+        /// foreground clear color and a background clear color.
         /// </summary>
-        /// <param name="clearCharacter">The character to clear the text buffer with.</param>
-        public void ClearTextBuffer(char clearCharacter)
+        /// <param name="clearPixel">The pixel to clear the pixel buffer with.</param>
+        public void ClearPixelBuffer(RenderingPixel clearPixel)
         {
-            for(int i = 0; i < this.BufferSize; i++)
+            for(int i = 0; i < this.BufferSize - 1; i++)
             {
-                this.TextBuffer[i] = clearCharacter;
+                this.PixelBuffer[i] = clearPixel;
             }
         }
 
         /// <summary>
-        /// Clear the foreground color buffer with a specified clear color.
+        /// Set a pixel into the current pixel buffer using a 1D index.
         /// </summary>
-        /// <param name="clearColor">The color to clear the buffer with.</param>
-        public void ClearForegroundColorBuffer(ConsoleColor clearColor)
+        /// <param name="index">The index of the pixel.</param>
+        /// <param name="fillPixel">The pixel to fill the index with.</param>
+        public void SetPixel(int index, RenderingPixel fillPixel)
         {
-            for(int i = 0; i < this.BufferSize; i++)
+            if(index < this.BufferSize)
             {
-                this.ForegroundColorBuffer[i] = clearColor;
+                this.PixelBuffer[index] = fillPixel;
             }
         }
 
         /// <summary>
-        /// Clear the background color buffer with a specified clear color.
-        /// </summary>
-        /// <param name="clearColor">The color to clear the buffer with.</param>
-        public void ClearBackgroundColorBuffer(ConsoleColor clearColor)
-        {
-            for(int i = 0; i < this.BufferSize; i++)
-            {
-                this.BackgroundColorBuffer[i] = clearColor;
-            }
-        }
-
-        /// <summary>
-        /// Set a pixel into the current character, foreground color and background 
-        /// color buffers.
+        /// Set a pixel into the current pixel buffer using a 2D index.
         /// </summary>
         /// <param name="x">The x coordinate of the pixel.</param>
         /// <param name="y">The y coordinate of the pixel.</param>
-        /// <param name="character">The character representing the pixel.</param>
-        /// <param name="foregroundColor">The foreground color of the pixel.</param>
-        /// <param name="backgroundColor">The background color of the pixel.</param>
-        public void SetPixel(int x, int y, char character, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+        /// <param name="fillPixel">The pixel to fill the coordinates with.</param>
+        public void SetPixel(int x, int y, RenderingPixel fillPixel)
         {
             if(x >= 0 && y >= 0 && x < this.BufferWidth && y < this.BufferHeight)
             {
                 int pixelIndex = this.Convert2DIndexTo1DIndex(x, y);
-
-                this.TextBuffer[pixelIndex] = character;
-                this.ForegroundColorBuffer[pixelIndex] = foregroundColor;
-                this.BackgroundColorBuffer[pixelIndex] = backgroundColor;
+                this.PixelBuffer[pixelIndex] = fillPixel;
             }
         }
 
@@ -121,22 +108,21 @@ namespace CLIGL
         /// <param name="y">The y coordinate of the rectangle.</param>
         /// <param name="width">The width of the rectangle.</param>
         /// <param name="height">The height of the rectangle.</param>
-        /// <param name="character">The character representing the rectangle's pixels.</param>
-        /// <param name="foregroundColor">The foreground color of the rectangle.</param>
-        /// <param name="backgroundColor">The background color of the rectangle.</param>
-        public void SetRectangle(int x, int y, int width, int height, char character, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+        /// <param name="fillPixel">The pixel to fill the rectangle with.</param>
+        public void SetRectangle(int x, int y, int width, int height, RenderingPixel fillPixel)
         {
             for(int xi = x; xi < x + width; xi++)
             {
                 for(int yi = y; yi < y + height; yi++)
                 {
-                    this.SetPixel(xi, yi, character, foregroundColor, backgroundColor);
+                    this.SetPixel(xi, yi, fillPixel);
                 }
             }
         }
 
         /// <summary>
-        /// Write the text and color buffers to the C# command-line interface.
+        /// Write the pixel buffer to the C# command-line interface, which will
+        /// produce specific output based on the contents of the pixel buffer.
         /// </summary>
         public void Render()
         {
@@ -145,9 +131,9 @@ namespace CLIGL
                 int[] cursorPosition = this.Convert1DIndexTo2DIndex(i);
                 Console.SetCursorPosition(cursorPosition[0], cursorPosition[1]);
 
-                Console.ForegroundColor = this.ForegroundColorBuffer[i];
-                Console.BackgroundColor = this.BackgroundColorBuffer[i];
-                Console.Write(this.TextBuffer[i]);
+                Console.ForegroundColor = this.PixelBuffer[i].ForegroundColor;
+                Console.BackgroundColor = this.PixelBuffer[i].BackgroundColor;
+                Console.Write(this.PixelBuffer[i].Character);
             }
         }
     }
