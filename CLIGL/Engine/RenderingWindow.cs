@@ -35,16 +35,6 @@ namespace CLIGL
         }
 
         /// <summary>
-        /// Resize the console window to the original passed width and height. This helps
-        /// prevent strange issues when drawing to the console.
-        /// </summary>
-        public void Resize()
-        {
-            Console.SetWindowSize(this.Width, this.Height);
-            Console.SetBufferSize(this.Width, this.Height);
-        }
-
-        /// <summary>
         /// Render the window. This function will render the provided rendering buffer
         /// to the console window output.
         /// </summary>
@@ -52,7 +42,8 @@ namespace CLIGL
         {
             try
             {
-                this.Resize();
+                Console.SetWindowSize(this.Width, this.Height);
+                Console.SetBufferSize(this.Width, this.Height);
                 renderingBuffer.Render();
             }
             catch(IOException) { }
