@@ -60,6 +60,20 @@ namespace CLIGL
         }
 
         /// <summary>
+        /// Apply a shader to the current rendering buffer, which may change the contents
+        /// of the buffer, changing how the buffer looks when it is rendered.
+        /// </summary>
+        /// <param name="renderingShader">The shader to apply.</param>
+        public void ApplyShader(RenderingShader renderingShader)
+        {
+            for(int i = 0; i < this.BufferSize - 1; i++)
+            {
+                int[] pixelPosition = this.Convert1DIndexTo2DIndex(i);
+                this.PixelBuffer[i] = renderingShader.Execute(pixelPosition[0], pixelPosition[1], this.PixelBuffer[i]);
+            }
+        }
+
+        /// <summary>
         /// Clear the current active pixel buffer with a clear character, a
         /// foreground clear color and a background clear color.
         /// </summary>

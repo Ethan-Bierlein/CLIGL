@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="Engine\RenderingBuffer.cs" />
     <Compile Include="Engine\RenderingPixel.cs" />
+    <Compile Include="Engine\RenderingShader.cs" />
     <Compile Include="Engine\RenderingWindow.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
