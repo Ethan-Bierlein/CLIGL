@@ -51,10 +51,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Engine\RenderingBuffer.cs" />
-    <Compile Include="Engine\RenderingPixel.cs" />
-    <Compile Include="Engine\RenderingShader.cs" />
-    <Compile Include="Engine\RenderingWindow.cs" />
+    <Compile Include="Engine\Buffer.cs" />
+    <Compile Include="Engine\MainCLIGL.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
