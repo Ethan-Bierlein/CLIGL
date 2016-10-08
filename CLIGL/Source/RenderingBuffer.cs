@@ -26,7 +26,6 @@ namespace CLIGL
             this.BufferSize = this.BufferWidth * this.BufferHeight;
 
             this.PixelBuffer = new RenderingPixel[this.BufferSize];
-
             for(int i = 0; i < this.BufferSize - 1; i++)
             {
                 this.PixelBuffer[i] = RenderingPixel.EmptyPixel;
@@ -115,8 +114,7 @@ namespace CLIGL
         }
 
         /// <summary>
-        /// Set a rectangle of pixels into the current chararacter, foreground color
-        /// and background color buffers.
+        /// Set a rectangle of pixels into the current pixel buffer.
         /// </summary>
         /// <param name="x">The x coordinate of the rectangle.</param>
         /// <param name="y">The y coordinate of the rectangle.</param>
@@ -135,6 +133,23 @@ namespace CLIGL
         }
 
         /// <summary>
+        /// Set a texture into the current pixel buffer.
+        /// </summary>
+        /// <param name="x">The x coordinate of the texture.</param>
+        /// <param name="y">The y coordinate of the texture.</param>
+        /// <param name="texture">The texture to set.</param>
+        public void SetTexture(int x, int y, RenderingTexture texture)
+        {
+            for(int xi = 0; xi < texture.Width; xi++)
+            {
+                for(int yi = 0; yi < texture.Height; yi++)
+                {
+                    this.SetPixel(x + xi, y + yi, texture.RenderingPixels[xi, yi]);
+                }
+            }
+        }
+
+        /// <summary>
         /// Write the pixel buffer to the C# command-line interface, which will
         /// produce specific output based on the contents of the pixel buffer.
         /// </summary>
@@ -142,9 +157,8 @@ namespace CLIGL
         {
             for(int i = 0; i < this.BufferSize - 1; i++)
             {
-                int[] cursorPosition = this.Convert1DIndexTo2DIndex(i);
-                Console.SetCursorPosition(cursorPosition[0], cursorPosition[1]);
-
+                int[] pixelPosition = this.Convert1DIndexTo2DIndex(i);
+                Console.SetCursorPosition(pixelPosition[0], pixelPosition[1]);
                 Console.ForegroundColor = this.PixelBuffer[i].ForegroundColor;
                 Console.BackgroundColor = this.PixelBuffer[i].BackgroundColor;
                 Console.Write(this.PixelBuffer[i].Character);
