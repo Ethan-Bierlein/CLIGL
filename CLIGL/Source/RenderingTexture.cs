@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace CLIGL
 {
@@ -28,6 +29,22 @@ namespace CLIGL
                 for(int y = 0; y < this.Height; y++)
                 {
                     this.RenderingPixels[x, y] = RenderingPixel.EmptyPixel;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Apply a shader to the current rendering texture, which may change the contents
+        /// of the texture, changing how the texture looks when it is rendered.
+        /// </summary>
+        /// <param name="renderingShader">The shader to apply.</param>
+        public void ApplyShader(RenderingShader renderingShader)
+        {
+            for(int x = 0; x < this.Width; x++)
+            {
+                for(int y = 0; y < this.Height; y++)
+                {
+                    this.RenderingPixels[x, y] = renderingShader.Execute(x, y, this.RenderingPixels[x, y]);
                 }
             }
         }

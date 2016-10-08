@@ -44,17 +44,6 @@ namespace CLIGL
         }
 
         /// <summary>
-        /// Get the position of the cursor relative to the current window. The
-        /// coordinates are returned as an array containing two short values.
-        /// </summary>
-        public short[] GetCursorPosition()
-        {
-            Interop.Coord cursorPosition;
-            Interop.GetCursorPos(out cursorPosition);
-            return new short[] { cursorPosition.X, cursorPosition.Y };
-        }
-
-        /// <summary>
         /// Render the window. This function will render the provided rendering buffer
         /// to the console window output.
         /// </summary>
@@ -65,27 +54,14 @@ namespace CLIGL
                 Console.SetWindowSize(this.Width, this.Height);
                 Console.SetBufferSize(this.Width, this.Height);
 
-                Interop.CharInfo[] characterBuffer = new Interop.CharInfo[this.Width * this.Height];
-                Interop.SmallRect windowRectangle = new Interop.SmallRect() {
-                    Left = 0,
-                    Top = 0,
-                    Right = (short)this.Width,
-                    Bottom = (short)this.Height
-                };
-
-                for(int i = 0; i < characterBuffer.Length; i++)
+                if(renderingBuffer.BufferWidth == this.Width && renderingBuffer.BufferHeight == this.Height)
                 {
-                    characterBuffer[i].Attributes = (short)renderingBuffer.PixelBuffer[i].ForegroundColor;
-                    characterBuffer[i].Char.AsciiChar = renderingBuffer.PixelBuffer[i].Character;
+                    renderingBuffer.Render(this.ConsoleHandle);
                 }
-
-                Interop.WriteConsoleOutput(
-                    this.ConsoleHandle,
-                    characterBuffer,
-                    new Interop.Coord() { X = (short)this.Width, Y = (short)this.Height },
-                    new Interop.Coord() { X = 0, Y = 0 },
-                    ref windowRectangle
-                );
+                else
+                {
+                    throw new Exception("The dimensions of the provided rendering buffer do not match the dimensions of the window.");
+                }
             }
             catch(IOException) { }
             catch(ArgumentOutOfRangeException) { }

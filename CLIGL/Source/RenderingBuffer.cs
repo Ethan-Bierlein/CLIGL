@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Runtime.CompilerServices;
+using Microsoft.Win32.SafeHandles;
 
 namespace CLIGL
 {
@@ -150,19 +152,50 @@ namespace CLIGL
         }
 
         /// <summary>
+        /// Set a string into the current pixel buffer.
+        /// </summary>
+        /// <param name="x">The x position of the string.</param>
+        /// <param name="y">The y position of the string.</param>
+        /// <param name="text">The text to set.</param>
+        /// <param name="foregroundColor">The foreground color of the string.</param>
+        /// <param name="backgroundColor">The background color of the string.</param>
+        public void SetString(int x, int y, string text, ConsoleColor foregroundColor, ConsoleColor backgroundColor)
+        {
+            for(int i = 0; i < text.Length; i++)
+            {
+                this.SetPixel(x + i, y, new RenderingPixel(text[i], foregroundColor, backgroundColor));
+            }
+        }
+
+        /// <summary>
         /// Write the pixel buffer to the C# command-line interface, which will
         /// produce specific output based on the contents of the pixel buffer.
         /// </summary>
-        public void Render()
+        /// <param name="consoleHandle">The handle to the current console window.</param>
+        public void Render(SafeFileHandle consoleHandle)
         {
-            for(int i = 0; i < this.BufferSize - 1; i++)
+            Interop.CharInfo[] characterBuffer = new Interop.CharInfo[this.BufferWidth * this.BufferHeight];
+            Interop.SmallRect windowRectangle = new Interop.SmallRect()
             {
-                int[] pixelPosition = this.Convert1DIndexTo2DIndex(i);
-                Console.SetCursorPosition(pixelPosition[0], pixelPosition[1]);
-                Console.ForegroundColor = this.PixelBuffer[i].ForegroundColor;
-                Console.BackgroundColor = this.PixelBuffer[i].BackgroundColor;
-                Console.Write(this.PixelBuffer[i].Character);
+                Left = 0,
+                Top = 0,
+                Right = (short)this.BufferWidth,
+                Bottom = (short)this.BufferHeight
+            };
+
+            for(int i = 0; i < characterBuffer.Length; i++)
+            {
+                characterBuffer[i].Attributes = (short)this.PixelBuffer[i].ForegroundColor;
+                characterBuffer[i].Char.AsciiChar = this.PixelBuffer[i].Character;
             }
+
+            Interop.WriteConsoleOutput(
+                consoleHandle,
+                characterBuffer,
+                new Interop.Coord() { X = (short)this.BufferWidth, Y = (short)this.BufferHeight },
+                new Interop.Coord() { X = 0, Y = 0 },
+                ref windowRectangle
+            );
         }
     }
 }
