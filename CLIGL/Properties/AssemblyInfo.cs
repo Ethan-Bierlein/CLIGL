@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
 
 [assembly: AssemblyTitle("CLIGL")]
 [assembly: AssemblyDescription("A command-line interface graphics library.")]
@@ -9,15 +9,8 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 2016")]
 [assembly: AssemblyTrademark("CLIGL")]
 [assembly: AssemblyCulture("")]
-
-#if DEBUG
-[assembly: AssemblyConfiguration("Debug")]
-#else
 [assembly: AssemblyConfiguration("Release")]
-#endif
-
 [assembly: ComVisible(false)]
 [assembly: Guid("ba149fed-7c88-47d9-b855-bff06adfbe52")]
-
-[assembly: AssemblyVersion("1.0")]
-[assembly: AssemblyFileVersion("1.0")]
+[assembly: AssemblyVersion("1.0.0.0")]
+[assembly: AssemblyFileVersion("1.0.0.0")]
