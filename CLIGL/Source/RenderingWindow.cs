@@ -45,8 +45,10 @@ namespace CLIGL
 
         /// <summary>
         /// Render the window. This function will render the provided rendering buffer
-        /// to the console window output.
+        /// to the console window output. If the dimensions of the provided rendering
+        /// buffer do not match the dimensions of the window, then an error is thrown.
         /// </summary>
+        /// <param name="renderingBuffer">The rendering buffer to render.</param>
         public void Render(RenderingBuffer renderingBuffer)
         {
             try
