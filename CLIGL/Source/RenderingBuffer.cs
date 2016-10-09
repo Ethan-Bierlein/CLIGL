@@ -185,7 +185,7 @@ namespace CLIGL
 
             for(int i = 0; i < characterBuffer.Length; i++)
             {
-                characterBuffer[i].Attributes = (short)this.PixelBuffer[i].ForegroundColor;
+                characterBuffer[i].Attributes = (byte)((byte)this.PixelBuffer[i].ForegroundColor | ((byte)this.PixelBuffer[i].BackgroundColor << 4));
                 characterBuffer[i].Char.AsciiChar = this.PixelBuffer[i].Character;
             }
 

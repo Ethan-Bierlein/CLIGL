@@ -43,9 +43,9 @@ namespace CLIGL
                 a.BackgroundColor == b.BackgroundColor
             )
             {
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
 
         /// <summary>
